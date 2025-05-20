@@ -19,7 +19,7 @@ class DioClient {
       InterceptorsWrapper(
         onRequest: (options, handler) {
           final hiveAuth = Hive.box<User>('authBox');
-          final user = hiveAuth.isNotEmpty ? hiveAuth.get('accessToken') : null;
+          final user = hiveAuth.isNotEmpty ? hiveAuth.get('user') : null;
           if (user != null && user.accessToken.isNotEmpty) {
             options.headers['Authorization'] = user.accessToken;
           }

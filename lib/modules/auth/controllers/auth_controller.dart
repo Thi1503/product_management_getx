@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:product_management_getx/app/bindings/auth_binding.dart';
 import 'package:product_management_getx/data/models/user.dart';
 import 'package:product_management_getx/data/services/auth_service.dart';
 import 'package:product_management_getx/modules/auth/views/login_page.dart';
