@@ -21,7 +21,7 @@ class DioClient {
           final hiveAuth = Hive.box<User>('authBox');
           final user = hiveAuth.isNotEmpty ? hiveAuth.get('accessToken') : null;
           if (user != null && user.accessToken.isNotEmpty) {
-            options.headers['Authorization'] = '${user.accessToken}';
+            options.headers['Authorization'] = user.accessToken;
           }
           handler.next(options);
         },

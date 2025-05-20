@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:product_management_getx/app/route.dart';
+import 'package:product_management_getx/app/bindings/auth_binding.dart';
 import 'package:product_management_getx/data/models/user.dart';
 import 'package:product_management_getx/data/services/auth_service.dart';
+import 'package:product_management_getx/modules/auth/views/login_page.dart';
 import 'package:product_management_getx/modules/product_list/view/product_list_page.dart';
 
 class AuthController extends GetxController {
@@ -43,7 +44,7 @@ class AuthController extends GetxController {
     // sau khi widget tree đã mount xong, mới điều hướng nếu có token
     final saved = authBox.getAt(0);
     if (saved != null && saved.accessToken.isNotEmpty) {
-      Get.offAllNamed(Routes.PRODUCT_LIST);
+      Get.offAll(ProductListPage());
     }
   }
 
@@ -68,6 +69,9 @@ class AuthController extends GetxController {
 
         // điều hướng sang ProductList
         Get.offAll(() => ProductListPage());
+        // Clear form để lần sau login không còn dữ liệu cũ
+        passwordController.clear();
+        submitted.value = false; // nếu bạn dùng autovalidate
       } catch (err) {
         // show error
         Get.snackbar(
@@ -119,7 +123,7 @@ class AuthController extends GetxController {
       );
     }
     // trở về login
-    Get.offAllNamed(Routes.LOGIN);
+    Get.offAll(LoginPage());
   }
 
   @override

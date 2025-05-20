@@ -32,20 +32,15 @@ class LoginPage extends GetView<AuthController> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Logo or Title
+                const SizedBox(height: 48),
                 Text(
-                  'Welcome',
+                  'Đăng nhập',
                   style: _theme.textTheme.headlineMedium!.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  'Please login to continue',
-                  style: _theme.textTheme.titleMedium!.copyWith(
-                    color: Colors.white70,
-                  ),
-                ),
+
                 const SizedBox(height: 48),
 
                 Card(

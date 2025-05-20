@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:product_management_getx/app/bindings/auth_binding.dart';
-import 'package:product_management_getx/app/route.dart';
 import 'package:product_management_getx/data/models/product.dart';
 import 'package:product_management_getx/data/models/user.dart';
 import 'package:product_management_getx/data/models/user_adapter.dart';
@@ -33,14 +32,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Product Management',
-      initialRoute: Routes.LOGIN, // tự động put AuthController trước route đầu
-      getPages: [
-        GetPage(
-          name: Routes.LOGIN,
-          page: () => LoginPage(),
-          binding: AuthBinding(),
-        ), // khởi tạo AuthController
-      ],
+
+      // 1. Đăng ký AuthController khi app khởi động
+      initialBinding: AuthBinding(),
+
+      // 2. Dùng thẳng LoginPage làm home, không cần Routes.LOGIN
+      home: LoginPage(),
+
+      // (có thể thêm theme, locale, translations…)
     );
   }
 }
