@@ -64,33 +64,28 @@ class ProductListPage extends StatelessWidget {
               if (index < productController.products.length) {
                 final product = productController.products[index];
                 return InkWell(
-                  onTap: () {
-                    Get.to(() => ProductDetailPage(product: product));
+                  onTap: () async {
+                    Get.to(() => ProductDetailPage(productId: product.id));
+                    // Chỉ refresh khi có kết quả true (tức là có xóa thành công)
+                    productController.refresh();
                   },
+
                   child: Card(
                     elevation: 2,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child:
-                              product.cover != null
-                                  ? Image.network(
-                                    product.cover!,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                  )
-                                  : Container(
-                                    color: Colors.grey[300],
-                                    child: Center(
-                                      child: Icon(Icons.image, size: 40),
-                                    ),
-                                  ),
+                          child: Image.network(
+                            product.cover,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            product.name ?? 'No Name',
+                            product.name,
                             style: TextStyle(fontWeight: FontWeight.bold),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -99,7 +94,7 @@ class ProductListPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
-                            'Giá: ${product.price?.toStringAsFixed(0) ?? '0'}',
+                            'Giá: ${product.price.toStringAsFixed(0)}',
                             style: TextStyle(color: Colors.grey[700]),
                           ),
                         ),
@@ -107,7 +102,7 @@ class ProductListPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
-                            'Số lượng: ${product.quantity ?? 0}',
+                            'Số lượng: ${product.quantity}',
                             style: TextStyle(color: Colors.grey[700]),
                           ),
                         ),

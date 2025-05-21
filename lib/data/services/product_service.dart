@@ -11,4 +11,15 @@ class ProductService {
     );
     return (res.data['data'] as List).map((e) => Product.fromJson(e)).toList();
   }
+
+  // Hàm lấy chi tiết product
+  Future<Product> fetchProductDetail(int productId) async {
+    final res = await _client.dio.get('/products/$productId');
+    return Product.fromJson(res.data['data']);
+  }
+
+  // Hàm xóa product
+  Future<void> deleteProduct(int productId) async {
+    await _client.dio.delete('/products/$productId');
+  }
 }
