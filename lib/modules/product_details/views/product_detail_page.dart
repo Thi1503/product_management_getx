@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:product_management_getx/app/route.dart';
 import 'package:product_management_getx/modules/product_details/controllers/product_detai_controller.dart';
-import 'package:product_management_getx/modules/product_list/controllers/product_list_controller.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final int productId;
@@ -14,42 +12,30 @@ class ProductDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(ProductDetailController(productId));
 
-    // void _confirmDelete() {
-    //   final controller = Get.find<ProductDetailController>();
-    //   if (controller.isLoading.value) return;
-
-    //   Get.defaultDialog(
-    //     title: 'Xác nhận',
-    //     middleText: 'Bạn có chắc muốn xóa sản phẩm này không?',
-    //     textCancel: 'Hủy',
-    //     textConfirm: 'Xóa',
-    //     confirmTextColor: Colors.white,
-    //     onConfirm: () async {
-    //       Get.back(); // đóng dialog
-
-    //       try {
-    //         await controller.deleteProduct();
-
-    //         // Sau khi xóa thành công mới pop màn hình detail và trả về true
-    //         Get.back(result: true);
-    //       } catch (e) {
-    //         Get.snackbar('Lỗi', 'Xóa sản phẩm thất bại');
-    //       }
-    //     },
-    //   );
-    // }
-
-    void _deleteProduct() async {
+    ///TODO: cần tối ưu và chuẩn lại
+    void _confirmDelete() async {
+      final controller = Get.find<ProductDetailController>();
       if (controller.isLoading.value) return;
 
-      try {
-        await controller.deleteProduct();
+      await Get.defaultDialog(
+        title: 'Xác nhận',
+        middleText: 'Bạn có chắc muốn xóa sản phẩm này không?',
+        textCancel: 'Hủy',
+        textConfirm: 'Xóa',
+        confirmTextColor: Colors.white,
+        onConfirm: () {
+          Get.back(); // đóng dialog
 
-        // Sau khi xóa thành công, quay lại màn hình danh sách
-        Get.back(result: true);
-      } catch (e) {
-        Get.snackbar('Lỗi', 'Xóa sản phẩm thất bại');
-      }
+          try {
+            controller.deleteProduct();
+
+            // Sau khi xóa thành công mới pop màn hình detail và trả về true
+          } catch (e) {
+            Get.snackbar('Lỗi', 'Xóa sản phẩm thất bại');
+          }
+        },
+      );
+      Get.back(result: true);
     }
 
     return Scaffold(
@@ -100,7 +86,7 @@ class ProductDetailPage extends StatelessWidget {
         );
       }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _deleteProduct(),
+        onPressed: () => _confirmDelete(),
         child: const Icon(Icons.delete, color: Colors.red),
         backgroundColor: Colors.white,
       ),

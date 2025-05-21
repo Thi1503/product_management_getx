@@ -4,12 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:product_management_getx/app/bindings/auth_binding.dart';
-import 'package:product_management_getx/app/route.dart';
 import 'package:product_management_getx/data/models/product.dart';
 import 'package:product_management_getx/data/models/user.dart';
 import 'package:product_management_getx/modules/auth/views/login_page.dart';
-import 'package:product_management_getx/modules/product_details/views/product_detail_page.dart';
-import 'package:product_management_getx/modules/product_list/view/product_list_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,16 +39,6 @@ class MyApp extends StatelessWidget {
 
       // 2. Dùng thẳng LoginPage làm home, không cần Routes.LOGIN
       home: LoginPage(),
-      getPages: [
-        GetPage(
-          name: Routes.LOGIN,
-          page: () => LoginPage(),
-          binding: AuthBinding(),
-        ),
-        GetPage(name: Routes.PRODUCT_LIST, page: () => ProductListPage()),
-      ],
-
-      // (có thể thêm theme, locale, translations…)
     );
   }
 }

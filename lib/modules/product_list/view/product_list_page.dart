@@ -65,9 +65,13 @@ class ProductListPage extends StatelessWidget {
                 final product = productController.products[index];
                 return InkWell(
                   onTap: () async {
-                    Get.to(() => ProductDetailPage(productId: product.id));
+                    final result = await Get.to(
+                      () => ProductDetailPage(productId: product.id),
+                    );
                     // Chỉ refresh khi có kết quả true (tức là có xóa thành công)
-                    productController.refresh();
+                    if (result == true) {
+                      productController.refresh();
+                    }
                   },
 
                   child: Card(
