@@ -6,8 +6,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:product_management_getx/app/bindings/auth_binding.dart';
 import 'package:product_management_getx/data/models/product.dart';
 import 'package:product_management_getx/data/models/user.dart';
-import 'package:product_management_getx/data/models/user_adapter.dart';
-import 'package:product_management_getx/data/models/product_adapter.dart';
 import 'package:product_management_getx/modules/auth/views/login_page.dart';
 
 void main() async {
@@ -19,8 +17,16 @@ void main() async {
   Hive.registerAdapter(ProductAdapter());
 
   // Mở box với kiểu dữ liệu tương ứng
-  if (!Hive.isBoxOpen('authBox')) {
-    await Hive.openBox<User>('authBox');
+  if (Hive.isBoxOpen('authBox')) {
+    await Hive.box('authBox').clear();
+  } else if (await Hive.boxExists('authBox')) {
+    await Hive.deleteBoxFromDisk('authBox');
+  }
+  await Hive.openBox<User>('authBox');
+  if (Hive.isBoxOpen('productCache')) {
+    await Hive.box('productCache').clear();
+  } else if (await Hive.boxExists('productCache')) {
+    await Hive.deleteBoxFromDisk('productCache');
   }
   await Hive.openBox<Product>('productCache');
 

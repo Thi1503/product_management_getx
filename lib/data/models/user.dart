@@ -1,11 +1,18 @@
-/// User model
-/// This class represents a user in the system.
+import 'package:hive/hive.dart';
+
+part 'user.g.dart'; // file adapter sẽ được tạo tự động
+
+@HiveType(typeId: 0)
 class User {
-  int taxCode;
+  @HiveField(0)
+  final int taxCode;
 
-  String username;
+  @HiveField(1)
+  final String username;
 
-  String accessToken;
+  @HiveField(2)
+  final String accessToken;
+
   User({
     required this.taxCode,
     required this.username,
