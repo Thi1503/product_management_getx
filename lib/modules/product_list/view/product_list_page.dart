@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:product_management_getx/modules/auth/controllers/auth_controller.dart';
 import 'package:product_management_getx/modules/product_details/views/product_detail_page.dart';
+import 'package:product_management_getx/modules/product_form/views/product_form_page.dart';
 import 'package:product_management_getx/modules/product_list/controllers/product_list_controller.dart';
 
 class ProductListPage extends StatelessWidget {
@@ -65,13 +66,12 @@ class ProductListPage extends StatelessWidget {
                 final product = productController.products[index];
                 return InkWell(
                   onTap: () async {
-                    final result = await Get.to(
+                    await Get.to(
                       () => ProductDetailPage(productId: product.id),
                     );
                     // Chỉ refresh khi có kết quả true (tức là có xóa thành công)
-                    if (result == true) {
-                      productController.refresh();
-                    }
+
+                    productController.refresh();
                   },
 
                   child: Card(
@@ -121,6 +121,15 @@ class ProductListPage extends StatelessWidget {
           ),
         );
       }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Get.to(() => ProductFormPage());
+          // Chỉ refresh khi có kết quả true (tức là có xóa thành công)
+
+          productController.refresh();
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }

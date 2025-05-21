@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:product_management_getx/modules/product_details/controllers/product_detai_controller.dart';
+import 'package:product_management_getx/modules/product_details/controllers/product_detail_controller.dart';
+import 'package:product_management_getx/modules/product_form/views/product_form_page.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final int productId;
@@ -35,7 +36,7 @@ class ProductDetailPage extends StatelessWidget {
           }
         },
       );
-      Get.back(result: true);
+      Get.back();
     }
 
     return Scaffold(
@@ -44,6 +45,19 @@ class ProductDetailPage extends StatelessWidget {
           final name = controller.product.value?.name ?? 'Loading...';
           return Text(name);
         }),
+        actions: [
+          Obx(() {
+            final product = controller.product.value;
+            return IconButton(
+              onPressed: () async {
+                await Get.to(() => ProductFormPage(), arguments: product?.id);
+
+                controller.fetchProduct();
+              },
+              icon: Icon(Icons.edit),
+            );
+          }),
+        ],
       ),
       body: Obx(() {
         if (controller.isLoading.value && controller.product.value == null) {
