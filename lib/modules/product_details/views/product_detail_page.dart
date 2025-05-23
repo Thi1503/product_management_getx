@@ -1,5 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:product_management_getx/modules/product_details/controllers/product_detail_controller.dart';
 import 'package:product_management_getx/modules/product_form/views/product_form_page.dart';
 
@@ -51,7 +53,8 @@ class ProductDetailPage extends StatelessWidget {
             return IconButton(
               onPressed: () async {
                 await Get.to(() => ProductFormPage(), arguments: product?.id);
-
+                // Đợi một frame để tránh lỗi tràn khi rebuild
+                await Future.delayed(const Duration(milliseconds: 100));
                 controller.fetchProduct();
               },
               icon: Icon(Icons.edit),
@@ -70,7 +73,8 @@ class ProductDetailPage extends StatelessWidget {
           return const Center(child: Text('No product data'));
         }
 
-        return Padding(
+        // Bọc nội dung trong SingleChildScrollView để tránh overflow khi bàn phím xuất hiện
+        return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
@@ -100,11 +104,10 @@ class ProductDetailPage extends StatelessWidget {
         );
       }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _confirmDelete(),
+        onPressed: _confirmDelete,
         child: const Icon(Icons.delete, color: Colors.red),
         backgroundColor: Colors.white,
       ),
-
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
