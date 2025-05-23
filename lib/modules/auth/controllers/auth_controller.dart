@@ -62,11 +62,14 @@ class AuthController extends GetxController {
     if (formKey.currentState?.validate() ?? false) {
       isLoading.value = true;
       try {
-        final taxCode = taxCodeController.text.trim();
+        final taxCodeStr = taxCodeController.text.trim();
+        final taxCode = int.tryParse(taxCodeStr);
+        if (taxCode == null) {
+          throw Exception('Mã số thuế phải là số');
+        }
         final username = usernameController.text.trim();
         final password = passwordController.text.trim();
 
-        // gọi service
         final user = await _authService.login(taxCode, username, password);
 
         // lưu vào Hive (xóa hết rồi add mới)
@@ -78,33 +81,11 @@ class AuthController extends GetxController {
         passwordController.clear();
         submitted.value = false; // nếu bạn dùng autovalidate
       } catch (err) {
-        // show error
         Get.snackbar(
-          // Mặc định `titleText` và `messageText` sẽ bị override nếu có, nên mình đưa hết vào đây
-          '',
-          '',
+          'Đăng nhập thất bại',
+          'Thông tin đăng nhập không chính xác',
           snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.white,
-          // Khoá các màu text chung
-          colorText: Colors.red,
-          // Bỏ luôn title mặc định, dùng custom Text
-          titleText: Text(
-            'Đăng nhập thất bại',
-            style: TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          messageText: Text(
-            'Thông tin đăng nhập không chính xác',
-            style: TextStyle(color: Colors.red, fontSize: 14),
-          ),
-          // Tuỳ chọn thêm để nó nổi bật hơn
-          borderRadius: 8,
-          margin: EdgeInsets.all(16),
-          snackStyle: SnackStyle.FLOATING,
-          duration: Duration(seconds: 1),
+          duration: Duration(seconds: 2),
         );
       } finally {
         isLoading.value = false;

@@ -26,7 +26,7 @@ class UserAdapter extends TypeAdapter<User> {
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(3) // số trường
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.taxCode)
       ..writeByte(1)
