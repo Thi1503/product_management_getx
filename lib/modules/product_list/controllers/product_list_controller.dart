@@ -28,7 +28,6 @@ class ProductListController extends GetxController {
       if (list.length < size) hasMore.value = false;
     } catch (e) {
       Get.snackbar('Lỗi', 'Không thể tải danh sách sản phẩm');
-      print('fetchInitial error: $e');
     } finally {
       isLoading.value = false;
     }
@@ -49,13 +48,13 @@ class ProductListController extends GetxController {
       }
     } catch (e) {
       Get.snackbar('Lỗi', 'Không thể tải thêm sản phẩm');
-      print('loadMore error: $e');
     } finally {
       isLoadMore.value = false;
     }
   }
 
   /// Dùng cho SmartRefresher
+  @override
   Future<void> refresh() async {
     await fetchInitial();
   }

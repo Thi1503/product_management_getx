@@ -28,10 +28,10 @@ class ProductListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Danh sách sản phẩm'),
+        title: const Text('Danh sách sản phẩm'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () {
               authController.logout();
             },
@@ -41,7 +41,7 @@ class ProductListPage extends StatelessWidget {
       body: Obx(() {
         if (productController.isLoading.value &&
             productController.products.isEmpty) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         int itemCount =
@@ -57,8 +57,8 @@ class ProductListPage extends StatelessWidget {
           },
           child: GridView.builder(
             controller: scrollController,
-            padding: EdgeInsets.all(8),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            padding: const EdgeInsets.all(8),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
@@ -78,7 +78,7 @@ class ProductListPage extends StatelessWidget {
                   },
                 );
               } else {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
             },
           ),
@@ -86,10 +86,10 @@ class ProductListPage extends StatelessWidget {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Get.to(() => ProductFormPage());
+          await Get.to(() => const ProductFormPage());
           productController.refresh();
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

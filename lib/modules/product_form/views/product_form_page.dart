@@ -42,8 +42,9 @@ class ProductFormPage extends StatelessWidget {
                   decoration: const InputDecoration(labelText: 'Giá'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value == null || value.isEmpty)
+                    if (value == null || value.isEmpty) {
                       return 'Không được để trống';
+                    }
                     if (int.tryParse(value) == null) return 'Phải là số';
                     return null;
                   },
@@ -54,8 +55,9 @@ class ProductFormPage extends StatelessWidget {
                   decoration: const InputDecoration(labelText: 'Số lượng'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value == null || value.isEmpty)
+                    if (value == null || value.isEmpty) {
                       return 'Không được để trống';
+                    }
                     if (int.tryParse(value) == null) return 'Phải là số';
                     return null;
                   },

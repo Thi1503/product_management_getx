@@ -62,39 +62,39 @@ class ProductFormController extends GetxController {
   }
 
   Future<void> saveProduct() async {
-    if (!(formKey.currentState?.validate() ?? false)) return;
+    if (formKey.currentState?.validate() ?? false) {
+      final name = nameController.text.trim();
+      final price = int.tryParse(priceController.text) ?? 0;
+      final quantity = int.tryParse(quantityController.text) ?? 0;
+      final cover = coverController.text.trim();
 
-    final name = nameController.text.trim();
-    final price = int.tryParse(priceController.text) ?? 0;
-    final quantity = int.tryParse(quantityController.text) ?? 0;
-    final cover = coverController.text.trim();
-
-    try {
-      isLoading.value = true;
-      if (isEditing.value && productId != null) {
-        final updated = Product(
-          id: productId!,
-          name: name,
-          price: price,
-          quantity: quantity,
-          cover: cover,
-        );
-        await _service.updateProduct(updated);
-      } else {
-        final newProduct = Product(
-          id: 0,
-          name: name,
-          price: price,
-          quantity: quantity,
-          cover: cover,
-        );
-        await _service.createProduct(newProduct);
+      try {
+        isLoading.value = true;
+        if (isEditing.value && productId != null) {
+          final updated = Product(
+            id: productId!,
+            name: name,
+            price: price,
+            quantity: quantity,
+            cover: cover,
+          );
+          await _service.updateProduct(updated);
+        } else {
+          final newProduct = Product(
+            id: 0,
+            name: name,
+            price: price,
+            quantity: quantity,
+            cover: cover,
+          );
+          await _service.createProduct(newProduct);
+        }
+        Get.back(result: true);
+      } catch (e) {
+        Get.snackbar('Lỗi', 'Lưu sản phẩm thất bại');
+      } finally {
+        isLoading.value = false;
       }
-      Get.back(result: true);
-    } catch (e) {
-      Get.snackbar('Lỗi', 'Lưu sản phẩm thất bại');
-    } finally {
-      isLoading.value = false;
     }
   }
 }

@@ -26,7 +26,7 @@ class ProductItem extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 product.name,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -38,7 +38,7 @@ class ProductItem extends StatelessWidget {
                 style: TextStyle(color: Colors.grey[700]),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(

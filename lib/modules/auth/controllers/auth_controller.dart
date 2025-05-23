@@ -74,7 +74,7 @@ class AuthController extends GetxController {
           'Đăng nhập thất bại',
           'Thông tin đăng nhập không chính xác',
           snackPosition: SnackPosition.TOP,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         );
       } finally {
         isLoading.value = false;

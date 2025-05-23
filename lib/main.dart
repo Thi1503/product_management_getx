@@ -2,33 +2,21 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:product_management_getx/app/bindings/auth_binding.dart';
-import 'package:product_management_getx/data/models/product.dart';
-import 'package:product_management_getx/data/models/user.dart';
 import 'package:product_management_getx/modules/auth/views/login_page.dart';
+import 'package:product_management_getx/app/hive_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Khởi tạo Hive và đăng ký các Adapter
-  await Hive.initFlutter();
-  Hive.registerAdapter(UserAdapter());
-  Hive.registerAdapter(ProductAdapter());
+  await HiveService.init();
 
-  // Mở box với kiểu dữ liệu tương ứng
-  if (!Hive.isBoxOpen('authBox')) {
-    await Hive.openBox<User>('authBox');
-  }
-
-  if (!Hive.isBoxOpen('productCache')) {
-    await Hive.openBox<Product>('productCache');
-  }
-
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

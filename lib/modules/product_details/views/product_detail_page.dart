@@ -8,8 +8,7 @@ import 'package:product_management_getx/modules/product_form/views/product_form_
 class ProductDetailPage extends StatelessWidget {
   final int productId;
 
-  const ProductDetailPage({Key? key, required this.productId})
-    : super(key: key);
+  const ProductDetailPage({super.key, required this.productId});
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +51,15 @@ class ProductDetailPage extends StatelessWidget {
             final product = controller.product.value;
             return IconButton(
               onPressed: () async {
-                await Get.to(() => ProductFormPage(), arguments: product?.id);
+                await Get.to(
+                  () => const ProductFormPage(),
+                  arguments: product?.id,
+                );
                 // Đợi một frame để tránh lỗi tràn khi rebuild
                 await Future.delayed(const Duration(milliseconds: 100));
                 controller.fetchProduct();
               },
-              icon: Icon(Icons.edit),
+              icon: const Icon(Icons.edit),
             );
           }),
         ],
@@ -105,8 +107,8 @@ class ProductDetailPage extends StatelessWidget {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: _confirmDelete,
-        child: const Icon(Icons.delete, color: Colors.red),
         backgroundColor: Colors.white,
+        child: const Icon(Icons.delete, color: Colors.red),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );

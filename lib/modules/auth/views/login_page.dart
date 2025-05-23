@@ -3,9 +3,11 @@ import 'package:get/get.dart';
 import 'package:product_management_getx/modules/auth/controllers/auth_controller.dart';
 
 class LoginPage extends GetView<AuthController> {
+  const LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _theme = Theme.of(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: Stack(
@@ -17,8 +19,8 @@ class LoginPage extends GetView<AuthController> {
               gradient: LinearGradient(
                 colors: [
                   // ignore: deprecated_member_use
-                  _theme.primaryColor.withOpacity(0.8),
-                  _theme.colorScheme.secondary,
+                  theme.primaryColor.withOpacity(0.8),
+                  theme.colorScheme.secondary,
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -35,7 +37,7 @@ class LoginPage extends GetView<AuthController> {
                 const SizedBox(height: 48),
                 Text(
                   'Đăng nhập',
-                  style: _theme.textTheme.headlineMedium!.copyWith(
+                  style: theme.textTheme.headlineMedium!.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -66,7 +68,9 @@ class LoginPage extends GetView<AuthController> {
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 labelText: 'Mã số thuế',
-                                prefixIcon: Icon(Icons.confirmation_number),
+                                prefixIcon: const Icon(
+                                  Icons.confirmation_number,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -88,7 +92,7 @@ class LoginPage extends GetView<AuthController> {
                               controller: controller.usernameController,
                               decoration: InputDecoration(
                                 labelText: 'Tên đăng nhập',
-                                prefixIcon: Icon(Icons.person),
+                                prefixIcon: const Icon(Icons.person),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -108,7 +112,7 @@ class LoginPage extends GetView<AuthController> {
                               obscureText: true,
                               decoration: InputDecoration(
                                 labelText: 'Mật khẩu',
-                                prefixIcon: Icon(Icons.lock),
+                                prefixIcon: const Icon(Icons.lock),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -141,12 +145,12 @@ class LoginPage extends GetView<AuthController> {
                                 ),
                                 child:
                                     controller.isLoading.value
-                                        ? CircularProgressIndicator(
+                                        ? const CircularProgressIndicator(
                                           valueColor: AlwaysStoppedAnimation(
                                             Colors.white,
                                           ),
                                         )
-                                        : Text(
+                                        : const Text(
                                           'Đăng nhập',
                                           style: TextStyle(fontSize: 16),
                                         ),
