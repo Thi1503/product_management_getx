@@ -75,6 +75,9 @@ class LoginPage extends GetView<AuthController> {
                                 if (value == null || value.isEmpty) {
                                   return 'Mã số thuế không được để trống';
                                 }
+                                if (int.tryParse(value) == null) {
+                                  return 'Mã số thuế phải là số';
+                                }
                                 return null;
                               },
                             ),

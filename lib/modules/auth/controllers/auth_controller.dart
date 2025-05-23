@@ -8,7 +8,7 @@ import 'package:product_management_getx/modules/product_list/view/product_list_p
 
 class AuthController extends GetxController {
   final formKey = GlobalKey<FormState>();
-  //  Text controllers
+  // Text controllers
   final taxCodeController = TextEditingController();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -21,18 +21,17 @@ class AuthController extends GetxController {
   // Hive box để lưu user
   late Box<User> authBox;
 
-  //  Service
+  // Service
   final AuthService _authService = AuthService();
 
-  //  Constructor
   @override
   void onInit() {
     super.onInit();
     authBox = Hive.box<User>('authBox');
     // chỉ prefill taxCode/username, không điều hướng ở đây
     final saved =
-        Hive.box<User>('authBox').isNotEmpty
-            ? Hive.box<User>('authBox').getAt(0)
+        authBox.isNotEmpty
+            ? authBox.get('user')
             : null;
     if (saved != null) {
       taxCodeController.text = saved.taxCode.toString();
@@ -45,8 +44,8 @@ class AuthController extends GetxController {
     super.onReady();
     // sau khi widget tree đã mount xong, mới điều hướng nếu có token
     final saved =
-        Hive.box<User>('authBox').isNotEmpty
-            ? Hive.box<User>('authBox').getAt(0)
+        authBox.isNotEmpty
+            ? authBox.get('user')
             : null;
     if (saved != null && saved.accessToken.isNotEmpty) {
       Get.offAll(ProductListPage());
@@ -55,10 +54,7 @@ class AuthController extends GetxController {
 
   /// Đăng nhập
   Future<void> login() async {
-    // bật autovalidate ngay khi user nhấn lần đầu
     if (!submitted.value) submitted.value = true;
-
-    // nếu form invalid thì thôi
     if (formKey.currentState?.validate() ?? false) {
       isLoading.value = true;
       try {
@@ -72,14 +68,13 @@ class AuthController extends GetxController {
 
         final user = await _authService.login(taxCode, username, password);
 
-        // lưu vào Hive (xóa hết rồi add mới)
+        // lưu vào Hive (xóa hết rồi add mới) - dùng key 'user' duy nhất
         await authBox.put('user', user);
 
         // điều hướng sang ProductList
         Get.offAll(() => ProductListPage());
-        // Clear form để lần sau login không còn dữ liệu cũ
         passwordController.clear();
-        submitted.value = false; // nếu bạn dùng autovalidate
+        submitted.value = false;
       } catch (err) {
         Get.snackbar(
           'Đăng nhập thất bại',
@@ -91,24 +86,21 @@ class AuthController extends GetxController {
         isLoading.value = false;
       }
     }
-    ;
   }
 
   /// Đăng xuất
   void logout() async {
-    if (authBox.isNotEmpty) {
-      // read:
-      final saved = authBox.get('user');
-      // chỉ add lại taxCode & username, token rỗng
-      await authBox.add(
+    final saved = authBox.get('user');
+    if (saved != null) {
+      await authBox.put(
+        'user',
         User(
-          taxCode: saved!.taxCode,
+          taxCode: saved.taxCode,
           username: saved.username,
           accessToken: '',
         ),
       );
     }
-    // trở về login
     Get.offAll(LoginPage());
   }
 
