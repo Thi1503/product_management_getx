@@ -29,10 +29,7 @@ class AuthController extends GetxController {
     super.onInit();
     authBox = Hive.box<User>('authBox');
     // chỉ prefill taxCode/username, không điều hướng ở đây
-    final saved =
-        authBox.isNotEmpty
-            ? authBox.get('user')
-            : null;
+    final saved = authBox.isNotEmpty ? authBox.get('user') : null;
     if (saved != null) {
       taxCodeController.text = saved.taxCode.toString();
       usernameController.text = saved.username;
@@ -43,10 +40,7 @@ class AuthController extends GetxController {
   void onReady() {
     super.onReady();
     // sau khi widget tree đã mount xong, mới điều hướng nếu có token
-    final saved =
-        authBox.isNotEmpty
-            ? authBox.get('user')
-            : null;
+    final saved = authBox.isNotEmpty ? authBox.get('user') : null;
     if (saved != null && saved.accessToken.isNotEmpty) {
       Get.offAll(ProductListPage());
     }
@@ -94,11 +88,7 @@ class AuthController extends GetxController {
     if (saved != null) {
       await authBox.put(
         'user',
-        User(
-          taxCode: saved.taxCode,
-          username: saved.username,
-          accessToken: '',
-        ),
+        User(taxCode: saved.taxCode, username: saved.username, accessToken: ''),
       );
     }
     Get.offAll(LoginPage());

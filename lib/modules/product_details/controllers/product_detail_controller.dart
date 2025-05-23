@@ -20,24 +20,31 @@ class ProductDetailController extends GetxController {
     _initHiveAndLoad();
   }
 
+  /// Khởi tạo Hive box và load dữ liệu cache, sau đó fetch dữ liệu mới từ API
   Future<void> _initHiveAndLoad() async {
-    // Mở box nếu chưa mở
-    if (!Hive.isBoxOpen('productCache')) {
+    try {
+      // Mở box (nếu đã mở thì Hive sẽ trả về box hiện tại)
       _productBox = await Hive.openBox<Product>('productCache');
-    } else {
-      _productBox = Hive.box<Product>('productCache');
-    }
 
-    // Load dữ liệu cached nếu có
+      // Load dữ liệu cached nếu có
+      _loadCache();
+
+      // Gọi API lấy dữ liệu mới, cập nhật cache và UI
+      await fetchProduct();
+    } catch (e) {
+      Get.snackbar('Lỗi', 'Không thể mở cache sản phẩm');
+    }
+  }
+
+  /// Load dữ liệu sản phẩm từ cache (nếu có)
+  void _loadCache() {
     final cachedProduct = _productBox.get(productId);
     if (cachedProduct != null) {
       product.value = cachedProduct;
     }
-
-    // Gọi API lấy dữ liệu mới, cập nhật cache và UI
-    await fetchProduct();
   }
 
+  /// Gọi API lấy chi tiết sản phẩm, cập nhật cache và UI
   Future<void> fetchProduct() async {
     isLoading.value = true;
     try {
@@ -47,12 +54,13 @@ class ProductDetailController extends GetxController {
       // Cập nhật cache Hive
       await _productBox.put(productId, fetched);
     } catch (e) {
-      // Có thể xử lý lỗi nếu cần
+      Get.snackbar('Lỗi', 'Tải sản phẩm thất bại');
     } finally {
       isLoading.value = false;
     }
   }
 
+  /// Xóa sản phẩm (gọi API và xóa cache)
   Future<void> deleteProduct() async {
     isLoading.value = true;
     try {

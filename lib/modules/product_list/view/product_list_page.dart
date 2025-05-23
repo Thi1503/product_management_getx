@@ -4,16 +4,17 @@ import 'package:product_management_getx/modules/auth/controllers/auth_controller
 import 'package:product_management_getx/modules/product_details/views/product_detail_page.dart';
 import 'package:product_management_getx/modules/product_form/views/product_form_page.dart';
 import 'package:product_management_getx/modules/product_list/controllers/product_list_controller.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class ProductListPage extends StatelessWidget {
   final AuthController authController = Get.find();
   final ProductListController productController = Get.put(
     ProductListController(),
   );
-
   final ScrollController scrollController = ScrollController();
+  final RefreshController refreshController = RefreshController();
 
-  ProductListPage({Key? key}) : super(key: key) {
+  ProductListPage({super.key}) {
     scrollController.addListener(() {
       if (scrollController.position.pixels >=
           scrollController.position.maxScrollExtent - 100) {
@@ -46,10 +47,12 @@ class ProductListPage extends StatelessWidget {
             productController.products.length +
             (productController.isLoadMore.value ? 1 : 0);
 
-        return RefreshIndicator(
+        return SmartRefresher(
+          controller: refreshController,
+          enablePullDown: true,
           onRefresh: () async {
-            productController.refresh();
-            return;
+            await productController.refresh();
+            refreshController.refreshCompleted();
           },
           child: GridView.builder(
             controller: scrollController,
@@ -69,11 +72,8 @@ class ProductListPage extends StatelessWidget {
                     await Get.to(
                       () => ProductDetailPage(productId: product.id),
                     );
-                    // Chỉ refresh khi có kết quả true (tức là có xóa thành công)
-
                     productController.refresh();
                   },
-
                   child: Card(
                     elevation: 2,
                     child: Column(
@@ -124,8 +124,6 @@ class ProductListPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Get.to(() => ProductFormPage());
-          // Chỉ refresh khi có kết quả true (tức là có xóa thành công)
-
           productController.refresh();
         },
         child: Icon(Icons.add),

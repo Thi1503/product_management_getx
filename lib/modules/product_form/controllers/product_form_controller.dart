@@ -10,6 +10,9 @@ class ProductFormController extends GetxController {
   // Service
   final ProductService _service = ProductService();
 
+  // Form key
+  final formKey = GlobalKey<FormState>();
+
   // Text controllers
   late TextEditingController nameController;
   late TextEditingController priceController;
@@ -59,15 +62,12 @@ class ProductFormController extends GetxController {
   }
 
   Future<void> saveProduct() async {
+    if (!(formKey.currentState?.validate() ?? false)) return;
+
     final name = nameController.text.trim();
     final price = int.tryParse(priceController.text) ?? 0;
     final quantity = int.tryParse(quantityController.text) ?? 0;
     final cover = coverController.text.trim();
-
-    if (name.isEmpty) {
-      Get.snackbar('Lỗi', 'Tên sản phẩm không được để trống');
-      return;
-    }
 
     try {
       isLoading.value = true;

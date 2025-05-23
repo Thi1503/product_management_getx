@@ -19,38 +19,55 @@ class ProductFormPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: ctrl.nameController,
-              decoration: const InputDecoration(labelText: 'Tên sản phẩm'),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: ctrl.priceController,
-              decoration: const InputDecoration(labelText: 'Giá'),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: ctrl.quantityController,
-              decoration: const InputDecoration(labelText: 'Số lượng'),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: ctrl.coverController,
-              decoration: const InputDecoration(labelText: 'URL Ảnh'),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: ctrl.saveProduct,
-              child: Obx(
-                () => Text(ctrl.isEditing.value ? 'Cập nhật' : 'Tạo mới'),
+        child: Form(
+          key: ctrl.formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextFormField(
+                controller: ctrl.nameController,
+                decoration: const InputDecoration(labelText: 'Tên sản phẩm'),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Không được để trống' : null,
               ),
-            ),
-          ],
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: ctrl.priceController,
+                decoration: const InputDecoration(labelText: 'Giá'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Không được để trống';
+                  if (int.tryParse(value) == null) return 'Phải là số';
+                  return null;
+                },
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: ctrl.quantityController,
+                decoration: const InputDecoration(labelText: 'Số lượng'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Không được để trống';
+                  if (int.tryParse(value) == null) return 'Phải là số';
+                  return null;
+                },
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: ctrl.coverController,
+                decoration: const InputDecoration(labelText: 'URL Ảnh'),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Không được để trống' : null,
+              ),
+              const SizedBox(height: 24),
+              Obx(
+                () => ElevatedButton(
+                  onPressed: ctrl.isLoading.value ? null : ctrl.saveProduct,
+                  child: Text(ctrl.isEditing.value ? 'Cập nhật' : 'Tạo mới'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

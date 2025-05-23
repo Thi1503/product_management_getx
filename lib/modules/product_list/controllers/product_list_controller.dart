@@ -6,7 +6,7 @@ class ProductListController extends GetxController {
   final ProductService _service = ProductService();
   var products = <Product>[].obs;
   var page = 1.obs;
-  final int size = 10;
+  final int size = 6;
   var isLoading = false.obs;
   var isLoadMore = false.obs;
   var hasMore = true.obs;
@@ -17,7 +17,7 @@ class ProductListController extends GetxController {
     fetchInitial();
   }
 
-  void fetchInitial() async {
+  Future<void> fetchInitial() async {
     if (isLoading.value) return;
     try {
       isLoading.value = true;
@@ -27,14 +27,14 @@ class ProductListController extends GetxController {
       products.assignAll(list);
       if (list.length < size) hasMore.value = false;
     } catch (e) {
-      // Xử lý lỗi: in log hoặc hiển thị message
+      Get.snackbar('Lỗi', 'Không thể tải danh sách sản phẩm');
       print('fetchInitial error: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
-  void loadMore() async {
+  Future<void> loadMore() async {
     if (isLoadMore.value || !hasMore.value) return;
     try {
       isLoadMore.value = true;
@@ -48,13 +48,15 @@ class ProductListController extends GetxController {
         hasMore.value = false;
       }
     } catch (e) {
+      Get.snackbar('Lỗi', 'Không thể tải thêm sản phẩm');
       print('loadMore error: $e');
     } finally {
       isLoadMore.value = false;
     }
   }
 
-  void refresh() {
-    fetchInitial();
+  /// Dùng cho SmartRefresher
+  Future<void> refresh() async {
+    await fetchInitial();
   }
 }
