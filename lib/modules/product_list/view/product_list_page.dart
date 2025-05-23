@@ -4,6 +4,7 @@ import 'package:product_management_getx/modules/auth/controllers/auth_controller
 import 'package:product_management_getx/modules/product_details/views/product_detail_page.dart';
 import 'package:product_management_getx/modules/product_form/views/product_form_page.dart';
 import 'package:product_management_getx/modules/product_list/controllers/product_list_controller.dart';
+import 'package:product_management_getx/modules/product_list/view/product_item.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class ProductListPage extends StatelessWidget {
@@ -67,52 +68,14 @@ class ProductListPage extends StatelessWidget {
             itemBuilder: (context, index) {
               if (index < productController.products.length) {
                 final product = productController.products[index];
-                return InkWell(
+                return ProductItem(
+                  product: product,
                   onTap: () async {
                     await Get.to(
                       () => ProductDetailPage(productId: product.id),
                     );
                     productController.refresh();
                   },
-                  child: Card(
-                    elevation: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Image.network(
-                            product.cover,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            product.name,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            'Giá: ${product.price.toStringAsFixed(0)}',
-                            style: TextStyle(color: Colors.grey[700]),
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            'Số lượng: ${product.quantity}',
-                            style: TextStyle(color: Colors.grey[700]),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 );
               } else {
                 return Center(child: CircularProgressIndicator());
