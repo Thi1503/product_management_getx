@@ -2,28 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:product_management_getx/app/app_initializer.dart';
 import 'package:product_management_getx/app/bindings/auth_binding.dart';
-import 'package:product_management_getx/data/dao/product_dao.dart';
-import 'package:product_management_getx/data/models/product.dart';
-import 'package:product_management_getx/data/models/user.dart';
-import 'package:product_management_getx/data/dao/auth_dao.dart';
 import 'package:product_management_getx/modules/auth/views/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Khởi tạo Hive và đăng ký các Adapter
-  await Hive.initFlutter();
-  Hive.registerAdapter(UserAdapter());
-  Hive.registerAdapter(ProductAdapter());
-
-  // Mở box với kiểu dữ liệu tương ứng
-  await AuthDao().init();
-
-  // Mở box productCache (chỉ một lần)
-  await ProductDao().init();
-
+  // Khởi tạo Hive và các adapter
+  // và các DAO cần thiết
+  await AppInitializer.init();
   runApp(MyApp());
 }
 
