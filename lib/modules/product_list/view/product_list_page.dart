@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:product_management_getx/app/bindings/product_detail_binding.dart';
 import 'package:product_management_getx/modules/auth/controllers/auth_controller.dart';
 import 'package:product_management_getx/modules/product_details/views/product_detail_page.dart';
 import 'package:product_management_getx/modules/product_form/views/product_form_page.dart';
@@ -71,10 +72,19 @@ class ProductListPage extends StatelessWidget {
                 return ProductItem(
                   product: product,
                   onTap: () async {
-                    await Get.to(
-                      () => ProductDetailPage(productId: product.id),
+                    final deleted = await Get.to(
+                      () => const ProductDetailPage(),
+                      arguments: product.id, // ✅ truyền id cho Binding
+                      binding: ProductDetailBinding(),
                     );
-                    productController.refresh();
+
+                    if (deleted == true) {
+                      productController.products.removeWhere(
+                        (p) => p.id == product.id,
+                      );
+                    } else {
+                      productController.refresh();
+                    }
                   },
                 );
               } else {

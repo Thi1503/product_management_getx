@@ -1,65 +1,54 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:product_management_getx/modules/product_details/controllers/product_detail_controller.dart';
 import 'package:product_management_getx/modules/product_form/views/product_form_page.dart';
 
-class ProductDetailPage extends StatelessWidget {
-  final int productId;
-
-  const ProductDetailPage({Key? key, required this.productId})
-    : super(key: key);
+class ProductDetailPage extends GetView<ProductDetailController> {
+  const ProductDetailPage({super.key}); // ❌ không cần productId nữa
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProductDetailController(productId));
-
-    ///TODO: cần tối ưu và chuẩn lại
-    void _confirmDelete() async {
-      final controller = Get.find<ProductDetailController>();
+    Future<void> _confirmDelete() async {
       if (controller.isLoading.value) return;
 
-      await Get.defaultDialog(
-        title: 'Xác nhận',
-        middleText: 'Bạn có chắc muốn xóa sản phẩm này không?',
-        textCancel: 'Hủy',
-        textConfirm: 'Xóa',
-        confirmTextColor: Colors.white,
-        onConfirm: () {
-          Get.back(); // đóng dialog
-
-          try {
-            controller.deleteProduct();
-
-            // Sau khi xóa thành công mới pop màn hình detail và trả về true
-          } catch (e) {
-            Get.snackbar('Lỗi', 'Xóa sản phẩm thất bại');
-          }
-        },
+      final confirm = await Get.dialog<bool>(
+        AlertDialog(
+          title: const Text('Xác nhận xóa'),
+          content: const Text('Bạn có chắc chắn muốn xóa sản phẩm này?'),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(result: false),
+              child: const Text('Hủy'),
+            ),
+            ElevatedButton(
+              onPressed: () => Get.back(result: true),
+              child: const Text('Xóa'),
+            ),
+          ],
+        ),
       );
-      Get.back();
+
+      if (confirm == true) {
+        await controller.deleteProduct();
+        Get.back(result: true, closeOverlays: true); // trả kết quả
+      }
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Obx(() {
-          final name = controller.product.value?.name ?? 'Loading...';
-          return Text(name);
-        }),
+        title: Obx(() => Text(controller.product.value?.name ?? 'Loading...')),
         actions: [
-          Obx(() {
-            final product = controller.product.value;
-            return IconButton(
-              onPressed: () async {
-                await Get.to(() => ProductFormPage(), arguments: product?.id);
-                // Đợi một frame để tránh lỗi tràn khi rebuild
-                await Future.delayed(const Duration(milliseconds: 100));
-                controller.fetchProduct();
-              },
-              icon: Icon(Icons.edit),
-            );
-          }),
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () async {
+              await Get.to(
+                () => const ProductFormPage(),
+                arguments: controller.product.value?.id,
+              );
+              await Future.delayed(const Duration(milliseconds: 100));
+              controller.fetchProduct();
+            },
+          ),
         ],
       ),
       body: Obx(() {
@@ -68,12 +57,9 @@ class ProductDetailPage extends StatelessWidget {
         }
 
         final product = controller.product.value;
-
-        if (product == null) {
+        if (product == null)
           return const Center(child: Text('No product data'));
-        }
 
-        // Bọc nội dung trong SingleChildScrollView để tránh overflow khi bàn phím xuất hiện
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -90,12 +76,12 @@ class ProductDetailPage extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 'Price: ${product.price.toStringAsFixed(0)}',
-                style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+                style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
               ),
               const SizedBox(height: 8),
               Text(
                 'Quantity: ${product.quantity}',
-                style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+                style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
               ),
               const SizedBox(height: 16),
               if (controller.isLoading.value) const LinearProgressIndicator(),
@@ -105,10 +91,9 @@ class ProductDetailPage extends StatelessWidget {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: _confirmDelete,
-        child: const Icon(Icons.delete, color: Colors.red),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.red,
+        child: const Icon(Icons.delete),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
