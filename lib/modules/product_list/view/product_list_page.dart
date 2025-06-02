@@ -9,57 +9,52 @@ import 'package:product_management_getx/modules/product_list/view/product_item.d
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class ProductListPage extends StatelessWidget {
+  ProductListPage({Key? key}) : super(key: key);
+
   final AuthController authController = Get.find();
   final ProductListController productController = Get.put(
     ProductListController(),
   );
-  final ScrollController scrollController = ScrollController();
   final RefreshController refreshController = RefreshController();
-
-  ProductListPage({super.key}) {
-    scrollController.addListener(() {
-      if (scrollController.position.pixels >=
-          scrollController.position.maxScrollExtent - 100) {
-        productController.loadMore();
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Danh sách sản phẩm'),
+        title: const Text('Danh sách sản phẩm'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              authController.logout();
-            },
+            icon: const Icon(Icons.logout),
+            onPressed: authController.logout,
           ),
         ],
       ),
       body: Obx(() {
+        // Nếu đang load lần đầu và chưa có data, hiển thị spinner giữa màn hình
         if (productController.isLoading.value &&
             productController.products.isEmpty) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
-        int itemCount =
-            productController.products.length +
-            (productController.isLoadMore.value ? 1 : 0);
+        // Số lượng item đúng bằng số products
+        final itemCount = productController.products.length;
 
         return SmartRefresher(
           controller: refreshController,
           enablePullDown: true,
+          enablePullUp: true, // bật load more
+          // (Nếu muốn costumize footer có thể truyền footer: ClassicFooter(), nhưng mặc định vẫn có)
           onRefresh: () async {
             await productController.refresh();
             refreshController.refreshCompleted();
           },
+          onLoading: () async {
+            await productController.loadMore();
+            refreshController.loadComplete();
+          },
           child: GridView.builder(
-            controller: scrollController,
-            padding: EdgeInsets.all(8),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            padding: const EdgeInsets.all(8),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
@@ -67,29 +62,25 @@ class ProductListPage extends StatelessWidget {
             ),
             itemCount: itemCount,
             itemBuilder: (context, index) {
-              if (index < productController.products.length) {
-                final product = productController.products[index];
-                return ProductItem(
-                  product: product,
-                  onTap: () async {
-                    final deleted = await Get.to(
-                      () => const ProductDetailPage(),
-                      arguments: product.id, // ✅ truyền id cho Binding
-                      binding: ProductDetailBinding(),
-                    );
+              final product = productController.products[index];
+              return ProductItem(
+                product: product,
+                onTap: () async {
+                  final deleted = await Get.to(
+                    () => const ProductDetailPage(),
+                    arguments: product.id,
+                    binding: ProductDetailBinding(),
+                  );
 
-                    if (deleted == true) {
-                      productController.products.removeWhere(
-                        (p) => p.id == product.id,
-                      );
-                    } else {
-                      productController.refresh();
-                    }
-                  },
-                );
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
+                  if (deleted == true) {
+                    productController.products.removeWhere(
+                      (p) => p.id == product.id,
+                    );
+                  } else {
+                    productController.refresh();
+                  }
+                },
+              );
             },
           ),
         );
@@ -99,7 +90,7 @@ class ProductListPage extends StatelessWidget {
           await Get.to(() => ProductFormPage());
           productController.refresh();
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

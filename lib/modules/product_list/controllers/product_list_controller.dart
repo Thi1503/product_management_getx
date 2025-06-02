@@ -9,7 +9,6 @@ class ProductListController extends GetxController {
   final int size = 6;
   final isLoading = false.obs;
   final isLoadMore = false.obs;
-  final hasMore = true.obs;
 
   @override
   void onReady() {
@@ -22,10 +21,14 @@ class ProductListController extends GetxController {
     try {
       isLoading.value = true;
       page = 1;
-      hasMore.value = true;
+      // Gọi API lấy trang đầu tiên
       final list = await _service.fetchProducts(page, size);
-      products.assignAll(list);
-      if (list.length < size) hasMore.value = false;
+      // Nếu API trả về null hoặc rỗng thì clear list hiện tại và dừng
+      if (list.isEmpty) {
+        products.clear();
+      } else {
+        products.assignAll(list);
+      }
     } catch (e) {
       Get.snackbar('Lỗi', 'Không thể tải danh sách sản phẩm');
       print('fetchInitial error: $e');
@@ -35,18 +38,20 @@ class ProductListController extends GetxController {
   }
 
   Future<void> loadMore() async {
-    if (isLoadMore.value || !hasMore.value) return;
+    if (isLoadMore.value) return;
     try {
       isLoadMore.value = true;
       final nextPage = page + 1;
       final next = await _service.fetchProducts(nextPage, size);
-      if (next.isNotEmpty) {
-        products.addAll(next);
-        page = nextPage;
-        if (next.length < size) hasMore.value = false;
-      } else {
-        hasMore.value = false;
+
+      // Nếu API trả về null hoặc rỗng => không thêm nữa, dừng
+      if (next.isEmpty) {
+        return;
       }
+
+      // Ngược lại, add vào và cập nhật page
+      products.addAll(next);
+      page = nextPage;
     } catch (e) {
       Get.snackbar('Lỗi', 'Không thể tải thêm sản phẩm');
       print('loadMore error: $e');

@@ -4,10 +4,11 @@ import 'package:product_management_getx/modules/product_details/controllers/prod
 import 'package:product_management_getx/modules/product_form/views/product_form_page.dart';
 
 class ProductDetailPage extends GetView<ProductDetailController> {
-  const ProductDetailPage({super.key}); // ❌ không cần productId nữa
+  const ProductDetailPage({super.key}); //  không cần productId nữa
 
   @override
   Widget build(BuildContext context) {
+    // Hàm xác nhận xóa sản phẩm
     Future<void> _confirmDelete() async {
       if (controller.isLoading.value) return;
 
