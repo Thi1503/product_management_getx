@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
+import 'package:product_management_getx/data/dao/product_dao.dart';
 import 'package:product_management_getx/data/models/product.dart';
 import 'package:product_management_getx/data/services/product_service.dart';
 
@@ -9,39 +9,27 @@ class ProductDetailController extends GetxController {
   final isLoading = false.obs;
 
   final ProductService _service = ProductService();
-
-  late Box<Product> _productBox;
+  final ProductDao _productDao = ProductDao();
 
   ProductDetailController(this.productId);
 
   @override
   void onInit() {
     super.onInit();
-    _initHiveAndLoad();
+    _loadCacheThenFetch();
   }
 
-  /// Khởi tạo Hive box và load dữ liệu cache, sau đó fetch dữ liệu mới từ API
-  Future<void> _initHiveAndLoad() async {
-    try {
-      // Mở box (nếu đã mở thì Hive sẽ trả về box hiện tại)
-      _productBox = await Hive.openBox<Product>('productCache');
-
-      // Load dữ liệu cached nếu có
-      _loadCache();
-
-      // Gọi API lấy dữ liệu mới, cập nhật cache và UI
-      await fetchProduct();
-    } catch (e) {
-      Get.snackbar('Lỗi', 'Không thể mở cache sản phẩm');
+  /// Bước 1: Load cache (nếu có) và hiển thị lên UI ngay
+  /// Bước 2: Gọi API fetch chi tiết, cập nhật cache & UI
+  Future<void> _loadCacheThenFetch() async {
+    // 1.1 Load cache từ DAO
+    final cached = _productDao.getCached(productId);
+    if (cached != null) {
+      product.value = cached;
     }
-  }
 
-  /// Load dữ liệu sản phẩm từ cache (nếu có)
-  void _loadCache() {
-    final cachedProduct = _productBox.get(productId);
-    if (cachedProduct != null) {
-      product.value = cachedProduct;
-    }
+    // 1.2 Gọi API để lấy dữ liệu mới
+    await fetchProduct();
   }
 
   /// Gọi API lấy chi tiết sản phẩm, cập nhật cache và UI
@@ -51,8 +39,8 @@ class ProductDetailController extends GetxController {
       final fetched = await _service.fetchProductDetail(productId);
       product.value = fetched;
 
-      // Cập nhật cache Hive
-      await _productBox.put(productId, fetched);
+      // Cập nhật cache Hive qua DAO
+      await _productDao.upsert(fetched);
     } catch (e) {
       Get.snackbar('Lỗi', 'Tải sản phẩm thất bại');
     } finally {
@@ -66,8 +54,8 @@ class ProductDetailController extends GetxController {
     try {
       await _service.deleteProduct(productId);
 
-      // Xóa cache sản phẩm trong Hive
-      await _productBox.delete(productId);
+      // Xóa cache sản phẩm trong Hive qua DAO
+      await _productDao.delete(productId);
 
       Get.snackbar('Thành công', 'Đã xóa sản phẩm');
     } catch (e) {

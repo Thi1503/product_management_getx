@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:product_management_getx/app/bindings/auth_binding.dart';
+import 'package:product_management_getx/data/dao/product_dao.dart';
 import 'package:product_management_getx/data/models/product.dart';
 import 'package:product_management_getx/data/models/user.dart';
 import 'package:product_management_getx/data/dao/auth_dao.dart';
@@ -18,12 +19,10 @@ void main() async {
   Hive.registerAdapter(ProductAdapter());
 
   // Mở box với kiểu dữ liệu tương ứng
-  // 3. Mở box duy nhất cho Auth
   await AuthDao().init();
 
-  if (!Hive.isBoxOpen('productCache')) {
-    await Hive.openBox<Product>('productCache');
-  }
+  // Mở box productCache (chỉ một lần)
+  await ProductDao().init();
 
   runApp(MyApp());
 }
