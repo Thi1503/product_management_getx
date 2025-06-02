@@ -14,9 +14,9 @@ class AuthController extends GetxController {
   final passwordController = TextEditingController();
 
   // Rx state
-  var isLoading = false.obs;
-  var isValidInput = false.obs;
-  var submitted = false.obs;
+  final isLoading = false.obs;
+  final isValidInput = false.obs;
+  final submitted = false.obs;
 
   // Hive box để lưu user
   late Box<User> authBox;

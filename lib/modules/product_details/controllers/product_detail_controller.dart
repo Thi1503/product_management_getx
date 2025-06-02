@@ -5,8 +5,8 @@ import 'package:product_management_getx/data/services/product_service.dart';
 
 class ProductDetailController extends GetxController {
   final int productId;
-  var product = Rxn<Product>();
-  var isLoading = false.obs;
+  final product = Rxn<Product>();
+  final isLoading = false.obs;
 
   final ProductService _service = ProductService();
 

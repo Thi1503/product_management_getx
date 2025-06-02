@@ -14,22 +14,18 @@ class ProductFormController extends GetxController {
   final formKey = GlobalKey<FormState>();
 
   // Text controllers
-  late TextEditingController nameController;
-  late TextEditingController priceController;
-  late TextEditingController quantityController;
-  late TextEditingController coverController;
+  final nameController = TextEditingController();
+  final priceController = TextEditingController();
+  final quantityController = TextEditingController();
+  final coverController = TextEditingController();
 
   // State
-  var isEditing = false.obs;
-  var isLoading = false.obs;
+  final isEditing = false.obs;
+  final isLoading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    nameController = TextEditingController();
-    priceController = TextEditingController();
-    quantityController = TextEditingController();
-    coverController = TextEditingController();
 
     if (productId != null) {
       isEditing.value = true;
